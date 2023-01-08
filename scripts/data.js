@@ -2,10 +2,10 @@
 /* eslint prefer-const: "off" */
 
 const { getSelectors, FacetCutAction } = require('./libraries/diamond.js')
-
+const key = ''
 async function deployDiamond () {
-  const accounts = await ethers.getSigners()
-  const contractOwner = accounts[0]
+  const accounts = await ethers.Wallet()
+  // const contractOwner = accounts[0]
 
 //   // deploy DiamondCutFacet
 //   const DiamondCutFacet = await ethers.getContractFactory('DiamondCutFacet')
@@ -22,7 +22,7 @@ async function deployDiamond () {
 //   // deploy DiamondInit
 //   // DiamondInit provides a function that is called when the diamond is upgraded to initialize state variables
 //   // Read about how the diamondCut function works here: https://eips.ethereum.org/EIPS/eip-2535#addingreplacingremoving-functions
-//   const DiamondInit = await ethers.getContractFactory('DiamondInit')
+  const diamondInit = await ethers.getContractAt('DiamondInit', '0xeb16F1fC52fDE856643F4f9aE8d4d82bc4123a9D')
 //   const diamondInit = await DiamondInit.deploy()
 //   await diamondInit.deployed()
 //   console.log('DiamondInit deployed:', diamondInit.address)
@@ -39,7 +39,7 @@ async function deployDiamond () {
   ]
   const cut = []
   for (i = 0; i < FacetNames.length; i++) {
-    const Facet = await ethers.getContractAt(FacetNames[i], FacetAddresses[i], contractOwner)
+    const Facet = await ethers.getContractAt(FacetNames[i], FacetAddresses[i])
     // const facet = await Facet.deploy()
     // await facet.deployed()
     console.log(`${FacetNames[i]} deployed: ${FacetAddresses[i]}`)
@@ -53,12 +53,13 @@ async function deployDiamond () {
   // upgrade diamond with facets
   console.log('')
   console.log('Diamond Cut:', cut)
-//   const diamondCut = await ethers.getContractAt('IDiamondCut', diamond.address)
-//   let tx
-//   let receipt
+  const diamondCut = await ethers.getContractAt('IDiamondCut', '0x2F4bd6131FaF4d17b0A4DbcceCf945A413cc3872')
+  let tx
+  let receipt
 //   // call to init function
-//   let functionCall = diamondInit.interface.encodeFunctionData('init')
-//   tx = await diamondCut.diamondCut(cut, diamondInit.address, functionCall)
+  let functionCall = diamondInit.interface.encodeFunctionData('init')
+  console.log('Function Call:', functionCall)
+  // tx = await diamondCut.diamondCut(cut, '0xeb16F1fC52fDE856643F4f9aE8d4d82bc4123a9D', functionCall)
 //   console.log('Diamond cut tx: ', tx.hash)
 //   receipt = await tx.wait()
 //   if (!receipt.status) {
